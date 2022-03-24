@@ -1,13 +1,12 @@
 package com.ceiba.biblioteca.services;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import com.ceiba.biblioteca.dao.IUsuarioDao;
 import com.ceiba.biblioteca.entitys.Usuario;
 import com.ceiba.biblioteca.models.ResponseModel;
+
 
 import org.springframework.stereotype.Service;
 
@@ -24,9 +23,7 @@ public class UsuarioServiceImpl implements IServiceUsuario {
     public ResponseModel save(Usuario usuario){
         settingDate(usuario);
         usuarioDao.save(usuario);
-        ResponseModel responseModel = new ResponseModel();
-        responseModel.id = usuario.id;
-        responseModel.fechaMaximaDevolucion = usuario.fechaMaximaDevolucion;
+        ResponseModel responseModel = responseJsonCongratulations(usuario);
         return responseModel;
     }
     
@@ -44,13 +41,7 @@ public class UsuarioServiceImpl implements IServiceUsuario {
 
 
     private Usuario settingDate(Usuario usuario){        
-
-        Calendar fechaInicial = Calendar.getInstance();
-
-        int reposicionDias = 0;
         int cantidadDias = 0;
-        int i = 0;
-
         switch (usuario.tipoUsuario) {
             case 1:
                 cantidadDias = 10;
@@ -65,34 +56,26 @@ public class UsuarioServiceImpl implements IServiceUsuario {
                 break;
         }
 
-        while(i<=cantidadDias){
+        LocalDate fechaPrestamo = LocalDate.now();
+        int reposicionDias = 0;
+        while(reposicionDias < cantidadDias){
 
-            if(fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || fechaInicial.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY){
-                reposicionDias++;
+            fechaPrestamo = fechaPrestamo.plusDays(1);
+            if (!(fechaPrestamo.getDayOfWeek() == DayOfWeek.SATURDAY || fechaPrestamo.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+                ++reposicionDias;
             }
-            i++;
-            fechaInicial.add(Calendar.DATE, 1);
         }
 
-        int totalDiasPrestamo = cantidadDias + reposicionDias;
-        
-        Calendar fechaEntrega = Calendar.getInstance();
-        fechaEntrega.add(Calendar.DATE, totalDiasPrestamo);
-
-        //validar si el dia que cayo de entrega es un Sabado o Domingo que no se contaba sumarle los dias faltantes a un dia habil.
-        if(fechaEntrega.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
-            fechaEntrega.add(Calendar.DATE, 1);
-        }else if(fechaEntrega.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY){
-            fechaEntrega.add(Calendar.DATE, 2);
-        }
-
-        Date date = fechaEntrega.getTime();
-        String pattern = "dd/MM/yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        String dateEntrega = simpleDateFormat.format(date);
-
-        usuario.fechaMaximaDevolucion = dateEntrega;
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        usuario.fechaMaximaDevolucion = fechaPrestamo.format(format);;
         return usuario;
+    }
+
+    private ResponseModel responseJsonCongratulations(Usuario usuario){
+        ResponseModel responseModel = new ResponseModel();
+        responseModel.id = usuario.id;
+        responseModel.fechaMaximaDevolucion = usuario.fechaMaximaDevolucion;
+        return responseModel;
     }
     
     
