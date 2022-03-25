@@ -23,11 +23,11 @@ public class Usuario {
 
     @NotEmpty(message = "No puede estar vacio")
     @Size(min=1, max = 10, message = "El isbn debe estar entre 1 y 10 caracteres")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     public String isbn;
 
     @Size(min=1, max = 10, message = "la identificacion del usuario debe estar entre 1 y 10 caracteres")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     public String identificacionUsuario;
 
     public int tipoUsuario;

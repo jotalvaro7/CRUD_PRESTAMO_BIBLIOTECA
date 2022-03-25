@@ -1,11 +1,12 @@
 package com.ceiba.biblioteca.services;
 
 import com.ceiba.biblioteca.entitys.Usuario;
-import com.ceiba.biblioteca.models.ResponseModel;
+
+import org.springframework.http.ResponseEntity;
 
 public interface IServiceUsuario {
     
-    public ResponseModel save(Usuario usuario);
+    public ResponseEntity save(Usuario usuario);
 
     public Usuario findByIdentificacionUsuario(String identificacionUsuario);
 

@@ -3,15 +3,24 @@ package com.ceiba.biblioteca.services;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ceiba.biblioteca.dao.IUsuarioDao;
 import com.ceiba.biblioteca.entitys.Usuario;
 import com.ceiba.biblioteca.models.ResponseModel;
 
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsuarioServiceImpl implements IServiceUsuario {
+
+
+    public static final int USUARIO_AFILIADO = 1;
+    public static final int USUARIO_EMPLEADO = 2;
+    public static final int USUARIO_INVITADO = 3;
 
     private IUsuarioDao usuarioDao;
 
@@ -20,12 +29,30 @@ public class UsuarioServiceImpl implements IServiceUsuario {
     }
 
     @Override
-    public ResponseModel save(Usuario usuario){
+    public ResponseEntity<?> save(Usuario usuario){
+
+        Map<String, Object> response = new HashMap<>();
+        //buscar si el usuario existe
+        Usuario usuarioExistente = findByIdentificacionUsuario(usuario.getIdentificacionUsuario());
+
+        if(usuarioExistente != null){
+            if(usuarioExistente.tipoUsuario == 3){
+                response.put("mensaje", "El usuario con identificación " + usuario.identificacionUsuario +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }    
+        }
+
+        if(usuario.tipoUsuario != USUARIO_AFILIADO && usuario.tipoUsuario != USUARIO_EMPLEADO && usuario.tipoUsuario != USUARIO_INVITADO){
+            response.put("mensaje", "Tipo de usuario no permitido en la biblioteca");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        
         String fechaPrestamo = settingDate(usuario);
         usuario.fechaMaximaDevolucion = fechaPrestamo;
         usuarioDao.save(usuario);
         ResponseModel responseModel = responseLibroPrestado(usuario);
-        return responseModel;
+        return new ResponseEntity<>(responseModel, HttpStatus.OK);
     }
     
 

@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.ceiba.biblioteca.entitys.Usuario;
-import com.ceiba.biblioteca.models.ResponseModel;
 import com.ceiba.biblioteca.services.IServiceUsuario;
 
 import org.springframework.dao.DataAccessException;
@@ -33,34 +32,18 @@ public class PrestamoControlador {
     @PostMapping()
     public ResponseEntity<?> save(@Valid @RequestBody Usuario usuario){
 
-        ResponseModel responseModel = new ResponseModel();
-        Usuario usuarioExistente = iServiceUsuario.findByIdentificacionUsuario(usuario.identificacionUsuario);
-
         Map<String, Object> response = new HashMap<>();
 
-        if(usuarioExistente != null){
-            if(usuarioExistente.tipoUsuario == 3){
-                response.put("mensaje", "El usuario con identificación " + usuario.identificacionUsuario +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }    
-        }
-
-        if(usuario.tipoUsuario != 1 && usuario.tipoUsuario != 2 && usuario.tipoUsuario != 3){
-            response.put("mensaje", "Tipo de usuario no permitido en la biblioteca");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-
         try{
-           responseModel = iServiceUsuario.save(usuario);
+           ResponseEntity responseEntity = iServiceUsuario.save(usuario);
+           return responseEntity;
         }catch(DataAccessException e){
             response.put("mensaje", "Error al realizar el insert en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(responseModel, HttpStatus.OK);
-
-
+    
     }
 
     @GetMapping("/{id}")
