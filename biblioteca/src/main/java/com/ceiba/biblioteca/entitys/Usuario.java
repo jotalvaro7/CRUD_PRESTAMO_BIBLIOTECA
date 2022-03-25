@@ -19,20 +19,20 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @NotEmpty(message = "No puede estar vacio")
     @Size(min=1, max = 10, message = "El isbn debe estar entre 1 y 10 caracteres")
     @Column(nullable = false)
-    public String isbn;
+    private String isbn;
 
     @Size(min=1, max = 10, message = "la identificacion del usuario debe estar entre 1 y 10 caracteres")
     @Column(nullable = false)
-    public String identificacionUsuario;
+    private String identificacionUsuario;
 
-    public int tipoUsuario;
+    private int tipoUsuario;
 
-    public String fechaMaximaDevolucion;
+    private String fechaMaximaDevolucion;
 
     public Long getId() {
         return id;

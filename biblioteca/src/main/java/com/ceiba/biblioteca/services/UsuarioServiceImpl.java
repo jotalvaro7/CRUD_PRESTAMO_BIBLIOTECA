@@ -36,20 +36,20 @@ public class UsuarioServiceImpl implements IServiceUsuario {
         Usuario usuarioExistente = findByIdentificacionUsuario(usuario.getIdentificacionUsuario());
 
         if(usuarioExistente != null){
-            if(usuarioExistente.tipoUsuario == 3){
-                response.put("mensaje", "El usuario con identificación " + usuario.identificacionUsuario +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
+            if(usuarioExistente.getTipoUsuario() == 3){
+                response.put("mensaje", "El usuario con identificación " + usuario.getIdentificacionUsuario() +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }    
         }
 
-        if(usuario.tipoUsuario != USUARIO_AFILIADO && usuario.tipoUsuario != USUARIO_EMPLEADO && usuario.tipoUsuario != USUARIO_INVITADO){
+        if(usuario.getTipoUsuario() != USUARIO_AFILIADO && usuario.getTipoUsuario() != USUARIO_EMPLEADO && usuario.getTipoUsuario() != USUARIO_INVITADO){
             response.put("mensaje", "Tipo de usuario no permitido en la biblioteca");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
         
         String fechaPrestamo = settingDate(usuario);
-        usuario.fechaMaximaDevolucion = fechaPrestamo;
+        usuario.setFechaMaximaDevolucion( fechaPrestamo );
         usuarioDao.save(usuario);
         ResponseModel responseModel = responseLibroPrestado(usuario);
         return new ResponseEntity<>(responseModel, HttpStatus.OK);
@@ -71,7 +71,7 @@ public class UsuarioServiceImpl implements IServiceUsuario {
     public String settingDate(Usuario usuario){  
 
         int cantidadDias = 0;
-        switch (usuario.tipoUsuario) {
+        switch (usuario.getTipoUsuario()) {
             case 1:
                 cantidadDias = 10;
                 break;
@@ -102,8 +102,8 @@ public class UsuarioServiceImpl implements IServiceUsuario {
 
     private ResponseModel responseLibroPrestado(Usuario usuario){
         ResponseModel responseModel = new ResponseModel();
-        responseModel.id = usuario.id;
-        responseModel.fechaMaximaDevolucion = usuario.fechaMaximaDevolucion;
+        responseModel.setId(usuario.getId());
+        responseModel.setFechaMaximaDevolucion(usuario.getFechaMaximaDevolucion());
         return responseModel;
     }
     

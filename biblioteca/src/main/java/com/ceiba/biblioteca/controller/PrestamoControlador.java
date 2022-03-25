@@ -29,16 +29,17 @@ public class PrestamoControlador {
         this.iServiceUsuario = iServiceUsuario;
     }
 
+    String message = "mensaje";
+
     @PostMapping()
     public ResponseEntity<?> save(@Valid @RequestBody Usuario usuario){
 
         Map<String, Object> response = new HashMap<>();
 
         try{
-           ResponseEntity responseEntity = iServiceUsuario.save(usuario);
-           return responseEntity;
+           return iServiceUsuario.save(usuario);
         }catch(DataAccessException e){
-            response.put("mensaje", "Error al realizar el insert en la base de datos");
+            response.put(message, "Error al realizar el insert en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -54,12 +55,12 @@ public class PrestamoControlador {
         try {
             usuario = iServiceUsuario.findById(id);
         } catch (DataAccessException e) {
-            response.put("mensaje", "Error al realizar la consulta en la base de datos");
+            response.put(message, "Error al realizar la consulta en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if(usuario == null){
-            response.put("mensaje", "El cliente ID: ".concat(id.toString()).concat(" no existe en la base de datos"));
+            response.put(message, "El cliente ID: ".concat(id.toString()).concat(" no existe en la base de datos"));
             return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
 

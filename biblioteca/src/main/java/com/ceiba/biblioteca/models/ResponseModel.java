@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class ResponseModel {
 
-    public Long id;
-    public String fechaMaximaDevolucion;
+    private Long id;
+    private String fechaMaximaDevolucion;
 
     
     public Long getId() {
