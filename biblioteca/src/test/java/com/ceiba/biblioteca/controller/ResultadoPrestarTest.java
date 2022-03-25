@@ -1,27 +1,22 @@
-package com.ceiba.biblioteca.models;
+package com.ceiba.biblioteca.controller;
 
-import lombok.Data;
+public class ResultadoPrestarTest {
+    private int id;
+    private String fechaMaximaDevolucion;
 
-@Data
-public class ResponseModel {
-
-    public Long id;
-    public String fechaMaximaDevolucion;
-
-    
-    public Long getId() {
+    public int getId() {
         return id;
     }
-    public void setId(Long id) {
-        this.id = id;
-    }
+
     public String getFechaMaximaDevolucion() {
         return fechaMaximaDevolucion;
     }
+
     public void setFechaMaximaDevolucion(String fechaMaximaDevolucion) {
         this.fechaMaximaDevolucion = fechaMaximaDevolucion;
     }
-    
-    
 
+    public void setId(int id) {
+        this.id = id;
+    }
 }

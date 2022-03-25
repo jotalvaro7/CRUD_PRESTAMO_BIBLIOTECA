@@ -21,16 +21,17 @@ public class UsuarioServiceImpl implements IServiceUsuario {
 
     @Override
     public ResponseModel save(Usuario usuario){
-        settingDate(usuario);
+        String fechaPrestamo = settingDate(usuario);
+        usuario.fechaMaximaDevolucion = fechaPrestamo;
         usuarioDao.save(usuario);
-        ResponseModel responseModel = responseJsonCongratulations(usuario);
+        ResponseModel responseModel = responseLibroPrestado(usuario);
         return responseModel;
     }
     
 
     @Override
     public Usuario findByIdentificacionUsuario(String identificacionUsuario){
-        return usuarioDao.findByIdentificaciónUsuario(identificacionUsuario);
+        return usuarioDao.findByIdentificacionUsuario(identificacionUsuario);
     }
 
     @Override
@@ -39,8 +40,9 @@ public class UsuarioServiceImpl implements IServiceUsuario {
     }
     
 
+    @Override
+    public String settingDate(Usuario usuario){  
 
-    private Usuario settingDate(Usuario usuario){        
         int cantidadDias = 0;
         switch (usuario.tipoUsuario) {
             case 1:
@@ -67,11 +69,11 @@ public class UsuarioServiceImpl implements IServiceUsuario {
         }
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        usuario.fechaMaximaDevolucion = fechaPrestamo.format(format);;
-        return usuario;
+        return fechaPrestamo.format(format);
+       
     }
 
-    private ResponseModel responseJsonCongratulations(Usuario usuario){
+    private ResponseModel responseLibroPrestado(Usuario usuario){
         ResponseModel responseModel = new ResponseModel();
         responseModel.id = usuario.id;
         responseModel.fechaMaximaDevolucion = usuario.fechaMaximaDevolucion;

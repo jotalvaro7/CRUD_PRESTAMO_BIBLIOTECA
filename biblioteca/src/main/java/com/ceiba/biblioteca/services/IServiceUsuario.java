@@ -11,4 +11,6 @@ public interface IServiceUsuario {
 
     public Usuario findById(Long id);
 
+    public String settingDate(Usuario usuario);
+
 }

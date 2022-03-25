@@ -12,7 +12,6 @@ import com.ceiba.biblioteca.services.IServiceUsuario;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,15 +31,16 @@ public class PrestamoControlador {
     }
 
     @PostMapping()
-    public ResponseEntity<?> save(@Valid @RequestBody Usuario usuario, BindingResult result ){
+    public ResponseEntity<?> save(@Valid @RequestBody Usuario usuario){
+
         ResponseModel responseModel = new ResponseModel();
-        Usuario usuarioExistente = iServiceUsuario.findByIdentificacionUsuario(usuario.identificaciónUsuario);
+        Usuario usuarioExistente = iServiceUsuario.findByIdentificacionUsuario(usuario.identificacionUsuario);
 
         Map<String, Object> response = new HashMap<>();
 
         if(usuarioExistente != null){
             if(usuarioExistente.tipoUsuario == 3){
-                response.put("mensaje", "El usuario con identificación " + usuario.identificaciónUsuario +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
+                response.put("mensaje", "El usuario con identificación " + usuario.identificacionUsuario +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }    
         }
@@ -50,7 +50,6 @@ public class PrestamoControlador {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        
         try{
            responseModel = iServiceUsuario.save(usuario);
         }catch(DataAccessException e){
