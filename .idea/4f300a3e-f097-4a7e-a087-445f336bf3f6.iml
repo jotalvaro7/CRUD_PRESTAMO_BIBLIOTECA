@@ -6,6 +6,9 @@
       <sourceFolder url="file://$MODULE_DIR$/biblioteca/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/biblioteca/src/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/biblioteca/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/biblioteca" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/biblioteca/src/main" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/biblioteca" />
     </content>
     <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -35,11 +35,9 @@ public class UsuarioServiceImpl implements IServiceUsuario {
         //buscar si el usuario existe
         Usuario usuarioExistente = findByIdentificacionUsuario(usuario.getIdentificacionUsuario());
 
-        if(usuarioExistente != null){
-            if(usuarioExistente.getTipoUsuario() == 3){
+        if(usuarioExistente != null && usuarioExistente.getTipoUsuario() == USUARIO_INVITADO){
                 response.put("mensaje", "El usuario con identificación " + usuario.getIdentificacionUsuario() +  " ya tiene un libro prestado por lo cual no se le puede realizar otro préstamo");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }    
         }
 
         if(usuario.getTipoUsuario() != USUARIO_AFILIADO && usuario.getTipoUsuario() != USUARIO_EMPLEADO && usuario.getTipoUsuario() != USUARIO_INVITADO){
